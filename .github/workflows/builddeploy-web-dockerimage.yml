@@ -1,0 +1,17 @@
+name: Build and Deploy Web
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      working-directory: ./web
+      run: docker build . --file Dockerfile --tag web:${GITHUB_SHA::8}

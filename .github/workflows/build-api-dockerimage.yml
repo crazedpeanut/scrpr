@@ -1,0 +1,17 @@
+name: Build Api
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build the Docker image
+      working-directory: ./api
+      run: docker build . --file Dockerfile --tag api:${GITHUB_SHA::8}
