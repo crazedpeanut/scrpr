@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Default Rules" ToolsVersion="16.0">
+  <Rules AnalyzerId="Microsoft.ApiDesignGuidelines.Analyzers" RuleNamespace="Microsoft.ApiDesignGuidelines.Analyzers">
+    <Rule Id="CA1716" Action="None" />  <!-- Libraries will not be consumed by non-csharp consumers. -->
+    <Rule Id="CA2007" Action="None" />  <!-- Synchronization contexts are not used. -->
+  </Rules>
+  <Rules AnalyzerId="Microsoft.Performance" RuleNamespace="Microsoft.Performance">
+    <Rule Id="CA1801" Action="None" />  <!-- Covered by IDE0060 -->
+  </Rules>
+  <Rules AnalyzerId="Roslynator.CSharp.Analyzers" RuleNamespace="Roslynator.CSharp.Analyzers">
+    <Rule Id="RCS1090" Action="None" /> <!-- Synchronization contexts are not used. -->
+    <Rule Id="RCS1163" Action="None" /> <!-- Duplicate of IDE0060, and doesn't ignore discards like _1 -->
+  </Rules>
+</RuleSet>

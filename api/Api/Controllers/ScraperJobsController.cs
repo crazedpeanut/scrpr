@@ -10,6 +10,8 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using PuppeteerSharp;
 using HtmlAgilityPack;
+using Api.Services;
+using Api.Models;
 
 namespace Api.Controllers
 {
@@ -21,14 +23,13 @@ namespace Api.Controllers
         private readonly ScraperService scraperService;
         private static ScraperResult result;
 
-        public ScraperJobsController(ILogger<ScraperJobsController> logger, IHttpClientFactory httpClient)
+        public ScraperJobsController(ILogger<ScraperJobsController> logger)
         {
             this.logger = logger;
             this.scraperService = new ScraperService(
-                httpClient.CreateClient(),
-                new List<IEntityExtractor>{
+               new ScraperFactory(new List<IEntityExtractor>{
                     new PhoneNumberEntityExtractor()
-                });
+                }));
         }
 
         [HttpPost]
@@ -51,96 +52,5 @@ namespace Api.Controllers
 
             return Ok(result);
         }
-    }
-
-    public class ScraperResult
-    {
-        public ScraperResult(List<Entity> entities)
-        {
-            Entities = entities;
-        }
-
-        public List<Entity> Entities { get; set; }
-    }
-
-    public class ScraperService
-    {
-        private readonly HttpClient httpClient;
-        private readonly IEnumerable<IEntityExtractor> entityExtractors;
-
-        public ScraperService(HttpClient httpClient, IEnumerable<IEntityExtractor> entityExtractors)
-        {
-            this.httpClient = httpClient;
-            this.entityExtractors = entityExtractors;
-        }
-
-        public async Task<ScraperResult> ScrapeUrl(Uri uri, CancellationToken cancellationToken)
-        {
-            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
-
-            Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
-            {
-                Headless = true
-            });
-
-            var page = await browser.NewPageAsync();
-            await page.GoToAsync(uri.ToString());
-            
-            var content = await page.GetContentAsync();
-
-            return AnalyseContent(content);
-        }
-
-        private ScraperResult AnalyseContent(string content)
-        {
-            var document = new HtmlDocument();
-            document.LoadHtml(content);
-
-            var textNodes = document
-                .DocumentNode
-                .DescendantsAndSelf()
-                .Where(node => !node.HasChildNodes && !string.IsNullOrEmpty(node.InnerText));
-
-            var entities = textNodes
-                .SelectMany(node => entityExtractors.SelectMany(extractor => extractor.Extract(node.InnerText)))
-                .ToList();
-
-            return new ScraperResult(entities);
-        }
-    }
-
-
-    public interface IEntityExtractor
-    {
-        List<Entity> Extract(string content);
-    }
-
-    public class PhoneNumberEntityExtractor : IEntityExtractor
-    {
-        public const string Name = "PhoneNumber";
-        private readonly Regex pattern = new Regex("(?<!\\d)\\d{10}(?!\\d)");
-        private readonly Regex whitespacePattern = new Regex("\\s");
-        public List<Entity> Extract(string content)
-        {
-            return pattern.Matches(whitespacePattern.Replace(content, "")).Select(m => new Entity(Name, m.Value, content)).ToList();
-        }
-    }
-
-    public class Entity
-    {
-        public Entity(string name, string raw, string source)
-        {
-            Name = name;
-            Raw = raw;
-            Source = source;
-        }
-        public string Name { get; set; }
-        public string Raw { get; set; }
-        public string Source { get; }
-    }
-
-    public class ScraperJob
-    {
-        public Uri Url { get; set; }
     }
 }
