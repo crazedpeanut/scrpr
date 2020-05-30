@@ -32,7 +32,7 @@ namespace Api.Services
                 .Find(query)
                 .ToListAsync(cancellationToken);
         }
-        
+
         public Task<List<ScraperResult>> Get(FilterDefinition<ScraperResult> query, CancellationToken cancellationToken)
         {
             return resultCollection
