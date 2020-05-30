@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using System.Net.Http;
+using PuppeteerSharp;
 using HtmlAgilityPack;
 
 namespace Api.Controllers
@@ -75,11 +76,17 @@ namespace Api.Controllers
 
         public async Task<ScraperResult> ScrapeUrl(Uri uri, CancellationToken cancellationToken)
         {
-            var response = await httpClient.GetAsync(uri, cancellationToken);
+            await new BrowserFetcher().DownloadAsync(BrowserFetcher.DefaultRevision);
 
-            response.EnsureSuccessStatusCode();
+            Browser browser = await Puppeteer.LaunchAsync(new LaunchOptions
+            {
+                Headless = true
+            });
 
-            var content = await response.Content.ReadAsStringAsync();
+            var page = await browser.NewPageAsync();
+            await page.GoToAsync(uri.ToString());
+            
+            var content = await page.GetContentAsync();
 
             return AnalyseContent(content);
         }
