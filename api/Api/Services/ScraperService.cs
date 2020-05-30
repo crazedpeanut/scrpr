@@ -23,24 +23,27 @@ namespace Api.Services
 
         public virtual Task<ScraperResult> ScrapeUrl(Uri url, CancellationToken cancellationToken)
         {
-            return scraperFactory.GetScraper(url).ScrapeUrl(url, cancellationToken);
+            return scraperFactory.GetScraper(url).Scrape(cancellationToken);
         }
     }
 
     public abstract class Scraper
     {
         protected virtual Browser Browser { get; set; }
+        public Uri Url { get; }
+
         private readonly IEnumerable<IEntityExtractor> entityExtractors;
 
-        protected Scraper(IEnumerable<IEntityExtractor> entityExtractors)
+        protected Scraper(Uri url, IEnumerable<IEntityExtractor> entityExtractors)
         {
+            Url = url;
             this.entityExtractors = entityExtractors;
         }
 
-        public async virtual Task<ScraperResult> ScrapeUrl(Uri url, CancellationToken cancellationToken)
+        public async virtual Task<ScraperResult> Scrape(CancellationToken cancellationToken)
         {
             await Initialize();
-            var page = await Navigate(url, cancellationToken);
+            var page = await Navigate(Url, cancellationToken);
             return await Analyse(page);
         }
 
@@ -81,7 +84,7 @@ namespace Api.Services
                 .SelectMany(node => entityExtractors.SelectMany(extractor => extractor.Extract(node.InnerText)))
                 .ToList();
 
-            return new ScraperResult(entities);
+            return new ScraperResult(Url, entities, DateTime.Now);
         }
     }
 
@@ -94,9 +97,9 @@ namespace Api.Services
             this.entityExtractors = entityExtractors;
         }
 
-        public Scraper GetScraper(Uri _)
+        public Scraper GetScraper(Uri url)
         {
-            return new BasicScraper(entityExtractors);
+            return new BasicScraper(url, entityExtractors);
         }
     }
 
@@ -107,7 +110,7 @@ namespace Api.Services
 
     public class BasicScraper : Scraper
     {
-        public BasicScraper(IEnumerable<IEntityExtractor> entityExtractors) : base(entityExtractors)
+        public BasicScraper(Uri url, IEnumerable<IEntityExtractor> entityExtractors) : base(url, entityExtractors)
         {
         }
     }

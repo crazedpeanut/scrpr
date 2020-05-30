@@ -9,8 +9,10 @@ namespace Api.Services
     {
         private readonly ScraperJobRepository jobRespository;
         private readonly ScraperService scraperService;
-        public ScraperJobProcessor(ScraperJobRepository jobRespository, ScraperService scraperService)
+        private readonly ScraperResultRespository resultRespository;
+        public ScraperJobProcessor(ScraperJobRepository jobRespository, ScraperService scraperService, ScraperResultRespository resultRespository)
         {
+            this.resultRespository = resultRespository;
             this.scraperService = scraperService;
             this.jobRespository = jobRespository;
         }
@@ -21,7 +23,7 @@ namespace Api.Services
 
             await jobRespository.Update(job, cancellationToken);
 
-            ScraperResult result;
+            ScraperResult result = null;
 
             try
             {
@@ -34,6 +36,11 @@ namespace Api.Services
             finally
             {
                 job.Status = ScraperJobStatus.Complete;
+            }
+
+            if (result != null)
+            {
+                await resultRespository.Create(result, cancellationToken);
             }
 
             await jobRespository.Update(job, cancellationToken);
