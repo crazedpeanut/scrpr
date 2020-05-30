@@ -7,10 +7,11 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using HtmlAgilityPack;
 using PuppeteerSharp;
+using MongoDB.Bson.Serialization.Attributes;
+using Api.Models;
 
 namespace Api.Services
 {
-
     public class ScraperService
     {
         private readonly ScraperFactory scraperFactory;
@@ -67,10 +68,14 @@ namespace Api.Services
             // TODO: Look into querying Puppeteer directly
             document.LoadHtml(await page.GetContentAsync());
 
+            // FIXME: Crude text node extraction, need to determine which nodes we're interested in.
+            // For example, not svgs, images, scripts, etc
             var textNodes = document
                 .DocumentNode
                 .DescendantsAndSelf()
-                .Where(node => !node.HasChildNodes && !string.IsNullOrEmpty(node.InnerText));
+                .Where(node =>
+                    !node.HasChildNodes
+                    && !string.IsNullOrEmpty(node.InnerText));
 
             var entities = textNodes
                 .SelectMany(node => entityExtractors.SelectMany(extractor => extractor.Extract(node.InnerText)))
@@ -87,23 +92,12 @@ namespace Api.Services
         public ScraperFactory(IEnumerable<IEntityExtractor> entityExtractors)
         {
             this.entityExtractors = entityExtractors;
-
         }
 
         public Scraper GetScraper(Uri _)
         {
             return new BasicScraper(entityExtractors);
         }
-    }
-
-    public class ScraperResult
-    {
-        public ScraperResult(List<Entity> entities)
-        {
-            Entities = entities;
-        }
-
-        public List<Entity> Entities { get; set; }
     }
 
     public interface IEntityExtractor
@@ -127,18 +121,5 @@ namespace Api.Services
         {
             return pattern.Matches(whitespacePattern.Replace(content, "")).Select(m => new Entity(Name, m.Value, content)).ToList();
         }
-    }
-
-    public class Entity
-    {
-        public Entity(string name, string raw, string source)
-        {
-            Name = name;
-            Raw = raw;
-            Source = source;
-        }
-        public string Name { get; set; }
-        public string Raw { get; set; }
-        public string Source { get; }
     }
 }

@@ -10,6 +10,12 @@ interface Entity {
 interface ScraperResult {
   entities: Entity[];
 }
+interface ScraperJob {
+  url: string;
+  id: string;
+  status: number;
+  error: string;
+}
 
 const scheduleScraper = (url: string) =>
   fetch(`${baseUrl}`, {
@@ -22,7 +28,7 @@ const scheduleScraper = (url: string) =>
     }),
   });
 
-const getScraperResult = (): Promise<ScraperResult | null> =>
+const getScraperJobs = (): Promise<ScraperJob[]> =>
   fetch(`${baseUrl}`, {
     method: "GET",
   }).then((r) => {
@@ -32,24 +38,16 @@ const getScraperResult = (): Promise<ScraperResult | null> =>
     return r.json();
   });
 
-const Result: React.FC<{ result: ScraperResult }> = ({ result }) => {
-  return (
-    <div>
-      {result.entities.map((e, i) => (
-        <div key={i}>
-          Name: {e.name}, Value: {e.raw}, Source: {e.source}
-        </div>
-      ))}
-    </div>
-  );
-};
-
 function App() {
-  const [result, setResult] = useState<ScraperResult | null>(null);
-  const [url, setUrl] = useState("");
+  const [jobs, setJobs] = useState<ScraperJob[]>([]);
+  const [url, setUrl] = useState("https://www.acma.gov.au/choose-your-phone-number");
 
   useEffect(() => {
-    getScraperResult().then(setResult);
+    const interval = setInterval(() => {
+      getScraperJobs().then(setJobs);
+    }, 500);
+
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -63,8 +61,14 @@ function App() {
         <button onClick={onStart}>Start!</button>
       </div>
       <div>
-        Results! <br/>
-        {result ? <Result result={result} /> : "Loading"}
+        Jobs! <br />
+        <ul>
+          {jobs.map((job) => (
+            <li key={job.id}>
+              Id: {job.id}, Url: {job.url}, status: {job.status}
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );

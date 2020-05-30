@@ -1,15 +1,10 @@
 ﻿using System.Text.RegularExpressions;
 using System.Threading;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Net.Http;
-using PuppeteerSharp;
-using HtmlAgilityPack;
 using Api.Services;
 using Api.Models;
 
@@ -19,38 +14,26 @@ namespace Api.Controllers
     [Route("[controller]")]
     public class ScraperJobsController : ControllerBase
     {
-        private readonly ILogger<ScraperJobsController> logger;
-        private readonly ScraperService scraperService;
-        private static ScraperResult result;
+        private readonly ScraperScheduler scraperScheduler;
 
-        public ScraperJobsController(ILogger<ScraperJobsController> logger)
+        public ScraperJobsController(ScraperScheduler scraperScheduler)
         {
-            this.logger = logger;
-            this.scraperService = new ScraperService(
-               new ScraperFactory(new List<IEntityExtractor>{
-                    new PhoneNumberEntityExtractor()
-                }));
+            this.scraperScheduler = scraperScheduler;
         }
 
         [HttpPost]
         public async Task<IActionResult> ScheduleJob(ScraperJob job, CancellationToken cancellationToken)
         {
-            result = await scraperService.ScrapeUrl(job.Url, cancellationToken);
-
-            logger.LogInformation(JsonConvert.SerializeObject(result));
+            await scraperScheduler.Begin(
+                new ScraperJob { Url = job.Url }, cancellationToken);
 
             return Ok();
         }
 
         [HttpGet]
-        public IActionResult GetScheduledJob()
+        public async Task<IActionResult> GetScheduledJob(CancellationToken cancellationToken)
         {
-            if (result == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(result);
+            return Ok(await scraperScheduler.List(cancellationToken));
         }
     }
 }
