@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const baseUrl = "http://localhost:5000/scraperjobs";
+const baseUrl = "http://localhost:5000";
 
 interface Entity {
   name: string;
@@ -9,6 +9,7 @@ interface Entity {
 }
 interface ScraperResult {
   entities: Entity[];
+  id: string;
 }
 interface ScraperJob {
   url: string;
@@ -18,7 +19,7 @@ interface ScraperJob {
 }
 
 const scheduleScraper = (url: string) =>
-  fetch(`${baseUrl}`, {
+  fetch(`${baseUrl}/scraperjobs`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -29,7 +30,17 @@ const scheduleScraper = (url: string) =>
   });
 
 const getScraperJobs = (): Promise<ScraperJob[]> =>
-  fetch(`${baseUrl}`, {
+  fetch(`${baseUrl}/scraperjobs`, {
+    method: "GET",
+  }).then((r) => {
+    if (r.status !== 200) {
+      return null;
+    }
+    return r.json();
+  });
+
+const getResults = (url: string): Promise<ScraperResult[]> =>
+  fetch(`${baseUrl}/scraperresults/${encodeURIComponent(url)}`, {
     method: "GET",
   }).then((r) => {
     if (r.status !== 200) {
@@ -40,7 +51,10 @@ const getScraperJobs = (): Promise<ScraperJob[]> =>
 
 function App() {
   const [jobs, setJobs] = useState<ScraperJob[]>([]);
-  const [url, setUrl] = useState("https://www.acma.gov.au/choose-your-phone-number");
+  const [url, setUrl] = useState(
+    "https://www.acma.gov.au/choose-your-phone-number"
+  );
+  const [results, setResults] = useState<ScraperResult[]>();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -66,8 +80,33 @@ function App() {
           {jobs.map((job) => (
             <li key={job.id}>
               Id: {job.id}, Url: {job.url}, status: {job.status}
+              <button
+                onClick={() => onGetResults(job.url)}
+                disabled={job.status !== 2}
+              >
+                Go
+              </button>
             </li>
           ))}
+        </ul>
+      </div>
+      <div>
+        Results <br />
+        <ul>
+          {results &&
+            results.map((result) => (
+              <li key={result.id}>
+                {result.id}
+                <ul>
+                  {result.entities.map((entity, i) => (
+                    <li key={i}>
+                      Name: {entity.name}, raw: {entity.raw}, source:{" "}
+                      {entity.source}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
         </ul>
       </div>
     </div>
@@ -75,6 +114,11 @@ function App() {
 
   async function onStart() {
     await scheduleScraper(url);
+  }
+
+  async function onGetResults(url: string) {
+    const results = await getResults(url);
+    setResults(results);
   }
 }
 

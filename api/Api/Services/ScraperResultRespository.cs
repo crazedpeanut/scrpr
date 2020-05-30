@@ -3,6 +3,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using MongoDB.Driver;
 using Api.Models;
+using System.Linq.Expressions;
+using System;
 
 namespace Api.Services
 {
@@ -24,10 +26,17 @@ namespace Api.Services
             return resultCollection.Find(j => j.Id == id).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<List<ScraperResult>> Get(CancellationToken cancellationToken)
+        public Task<List<ScraperResult>> Get(Expression<Func<ScraperResult, bool>> query, CancellationToken cancellationToken)
         {
             return resultCollection
-                .Find(_ => true)
+                .Find(query)
+                .ToListAsync(cancellationToken);
+        }
+        
+        public Task<List<ScraperResult>> Get(FilterDefinition<ScraperResult> query, CancellationToken cancellationToken)
+        {
+            return resultCollection
+                .Find(query)
                 .ToListAsync(cancellationToken);
         }
 
