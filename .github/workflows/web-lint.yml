@@ -1,0 +1,22 @@
+name: web
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: NPM Install
+      working-directory: ./web
+      run: npm i
+    - name: Lint
+      working-directory: ./web
+      run: ./node_modules/eslint/bin/eslint.js  --ext .jsx,.js,.ts,.tsx .

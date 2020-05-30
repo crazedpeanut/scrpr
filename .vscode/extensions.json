@@ -1,0 +1,12 @@
+{
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "fudge.auto-using",
+      "jchannon.csharpextensions",
+      "josefpihrt-vscode.roslynator",
+      "ms-azuretools.vscode-cosmosdb",
+      "ms-dotnettools.csharp",
+      "pflannery.vscode-versionlens",
+    ]
+  }
+  

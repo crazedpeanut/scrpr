@@ -1,0 +1,135 @@
+{
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "ecmaVersion": 2020,
+      "project": "./tsconfig.json"
+    },
+    "env": {
+      "browser": true
+    },
+    "plugins": ["@typescript-eslint", "react-hooks"],
+    "extends": [
+      "airbnb",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:import/typescript",
+      "plugin:prettier/recommended",
+      "prettier/@typescript-eslint",
+      "prettier/react"
+    ],
+    "rules": {
+      "@typescript-eslint/explicit-function-return-type": [
+        "error",
+        {
+          "allowExpressions": true,
+          "allowTypedFunctionExpressions": true,
+          "allowHigherOrderFunctions": true
+        }
+      ],
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "argsIgnorePattern": "^_"
+        }
+      ],
+      "import/extensions": [
+        "error",
+        "never",
+        {
+          "svg": "always"
+        }
+      ],
+      "import/no-unresolved": "off", // See: https://github.com/benmosher/eslint-plugin-import/issues/1292
+      "import/order": [
+        1, // warn
+        {
+          "alphabetize": {
+            "order": "asc"
+          },
+          "groups": [
+            ["builtin", "external"],
+            ["internal", "parent", "sibling", "index"]
+          ],
+          "newlines-between": "always",
+          "pathGroups": [
+            {
+              "group": "internal",
+              "pattern": "@(app|components|config|pages|services){,/**}",
+              "position": "before"
+            }
+          ],
+          "pathGroupsExcludedImportTypes": ["builtin"]
+        }
+      ],
+      "import/prefer-default-export": "off",
+      "jsx-a11y/click-events-have-key-events": "off", // FIXME: Don't be lazy
+      "jsx-a11y/label-has-for": "off", // Deprecated
+      "no-plusplus": "off",
+      "prettier/prettier": [
+        "error",
+        {
+          "arrowParens": "always",
+          "bracketSpacing": true,
+          "jsxBracketSameLine": false,
+          "jsxSingleQuote": false,
+          "printWidth": 100,
+          "proseWrap": "preserve",
+          "quoteProps": "as-needed",
+          "semi": true,
+          "singleQuote": true,
+          "tabWidth": 2,
+          "trailingComma": "none",
+          "useTabs": false
+        }
+      ],
+      "react/jsx-filename-extension": [
+        "error",
+        {
+          "extensions": [".jsx", ".tsx"]
+        }
+      ],
+      "react/jsx-props-no-spreading": "off",
+      "react/jsx-sort-props": [
+        "warn",
+        {
+          "callbacksLast": true,
+          "shorthandFirst": true,
+          "ignoreCase": true
+        }
+      ],
+      "react/prop-types": [
+        "error",
+        {
+          "skipUndeclared": true
+        }
+      ],
+      "react/sort-prop-types": [
+        "warn",
+        {
+          "callbacksLast": true,
+          "ignoreCase": false,
+          "requiredFirst": false,
+          "sortShapeProp": true,
+          "noSortAlphabetically": false
+        }
+      ],
+      "react-hooks/rules-of-hooks": "error",
+      "sort-imports": [
+        "warn",
+        {
+          "ignoreCase": true,
+          "ignoreDeclarationSort": true,
+          "ignoreMemberSort": false
+        }
+      ],
+      "sort-keys": [
+        "warn",
+        "asc",
+        {
+          "caseSensitive": false,
+          "natural": true,
+          "minKeys": 2
+        }
+      ]
+    }
+  }
+  
