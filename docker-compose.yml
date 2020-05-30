@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  api:
+    build: ./api
+  web:
+    build: ./web
+  rabbit:
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+  mongo: 
+    image: mongo
+    ports:
+      - 27017:27017
