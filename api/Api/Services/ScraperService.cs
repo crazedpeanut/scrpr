@@ -1,3 +1,4 @@
+using System.IO;
 using System.Threading;
 using System;
 using System.Collections.Generic;
@@ -64,7 +65,7 @@ namespace Api.Services
             return page;
         }
 
-        protected async Task<ScraperResult> Analyse(Page page)
+        protected async virtual Task<ScraperResult> Analyse(Page page)
         {
             var document = new HtmlDocument();
 
@@ -91,15 +92,17 @@ namespace Api.Services
     public class ScraperFactory
     {
         private readonly IEnumerable<IEntityExtractor> entityExtractors;
+        private readonly OCRService ocrService;
 
-        public ScraperFactory(IEnumerable<IEntityExtractor> entityExtractors)
+        public ScraperFactory(IEnumerable<IEntityExtractor> entityExtractors, OCRService ocrService)
         {
             this.entityExtractors = entityExtractors;
+            this.ocrService = ocrService;
         }
 
         public Scraper GetScraper(Uri url)
         {
-            return new BasicScraper(url, entityExtractors);
+            return new OCRScraper(ocrService, url, entityExtractors);
         }
     }
 
@@ -112,6 +115,29 @@ namespace Api.Services
     {
         public BasicScraper(Uri url, IEnumerable<IEntityExtractor> entityExtractors) : base(url, entityExtractors)
         {
+        }
+    }
+
+    public class OCRScraper : Scraper
+    {
+        private readonly OCRService ocrService;
+
+        public OCRScraper(OCRService ocrService, Uri url, IEnumerable<IEntityExtractor> entityExtractors) : base(url, entityExtractors)
+        {
+            this.ocrService = ocrService;
+        }
+
+        protected override async Task<ScraperResult> Analyse(Page page)
+        {
+            var results = await base.Analyse(page);
+
+            var imageFileName = Path.GetTempFileName() + ".png";
+            await page.ScreenshotAsync(imageFileName, new ScreenshotOptions{
+                FullPage = true
+            });
+            ocrService.ReadImage(imageFileName);
+
+            return results;
         }
     }
 

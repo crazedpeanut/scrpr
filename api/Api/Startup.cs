@@ -49,6 +49,7 @@ namespace Api
                 .AddScoped<ScraperJobRepository>()
                 .AddScoped<ScraperJobProcessor>()
                 .AddScoped<ScraperService>()
+                .AddSingleton<OCRService>()
                 .AddScoped<ScraperResultRespository>()
                 .AddScoped<ScraperFactory>()
                 .AddSingleton<IEnumerable<IEntityExtractor>>(new List<IEntityExtractor>(){

@@ -6,10 +6,11 @@
     <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
-    <PackageReference Include="PuppeteerSharp" Version="2.0.3"/>
-    <PackageReference Include="HtmlAgilityPack" Version="1.11.23"/>
-    <PackageReference Include="RabbitMQ.Client" Version="6.0.0"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.10.4"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="PuppeteerSharp" Version="2.0.3" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.23" />
+    <PackageReference Include="RabbitMQ.Client" Version="6.0.0" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.4" />
+    <PackageReference Include="Tesseract" Version="3.3.0" />
   </ItemGroup>
 </Project>
