@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+option csharp_namespace = "Scraper";
+
+package scraper_messaging;
+
+message ScraperJobQueueMessage {
+    string id = 1;
+    string url = 2;
+}

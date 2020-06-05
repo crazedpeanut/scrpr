@@ -1,9 +1,8 @@
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using Google.Protobuf;
 using RabbitMQ.Client;
+using Scraper;
 using ScraperService.Models;
 using shared;
 
@@ -38,8 +37,13 @@ namespace ScraperService.Services
                 autoDelete: false,
                 arguments: null);
 
-            string message = JsonConvert.SerializeObject(job);
-            var body = Encoding.UTF8.GetBytes(message);
+            var message = new ScraperJobQueueMessage
+            {
+                Id = job.Id,
+                Url = job.Url.ToString()
+            };
+
+            var body = message.ToByteArray();
 
             channel.BasicPublish(
                 exchange: "",

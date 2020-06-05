@@ -2,14 +2,12 @@ using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using ScrprApi.Models;
-using ScrprApi.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using Google.Protobuf;
 
 namespace ScraperProcessor
 {
@@ -44,13 +42,15 @@ namespace ScraperProcessor
                 arguments: null);
 
             var consumer = new EventingBasicConsumer(channel);
+
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
-                var message = JsonConvert.DeserializeObject<ScraperJob>(Encoding.UTF8.GetString(body.ToArray()));
+
+
                 using var scope = serviceProvider.CreateScope();
 
-                var jobProcessor = scope.ServiceProvider.GetRequiredService<ScraperJobProcessor>();
+                var jobProcessor = scope.ServiceProvider.GetRequiredService<ScraperJobProcessor>();    
 
                 try
                 {
