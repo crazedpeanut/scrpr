@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
-using MongoDB.Bson.Serialization.Attributes;
 
-namespace Api.Models
+namespace ScraperService.Models
 {
-    public class ScraperResult : MongoEntity
+    public class ScraperResult
     {
         public ScraperResult(Uri url, List<Entity> entities, DateTime timestamp)
         {

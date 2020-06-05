@@ -1,0 +1,37 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option csharp_namespace = "Scraper";
+
+package scraper_scheduler;
+
+service Scheduler {
+  rpc Begin (ScraperJobRequest) returns (ScraperJobResponse);
+  rpc List (google.protobuf.Empty) returns (stream ScraperListResponse);
+  rpc Subscribe(google.protobuf.Empty) returns (stream ScraperSchedulerEvent);
+}
+
+enum ScraperJobStatus {
+  CREATED = 0;
+  RUNNING = 1;
+  COMPLETE = 2;
+}
+
+message ScraperSchedulerEvent {
+  string jobId = 1;
+  ScraperJobStatus status = 2; 
+}
+
+message ScraperJobRequest {
+  string url = 1;
+}
+
+message ScraperJobResponse {
+  string id = 2;
+}
+
+message ScraperListResponse {
+  string url = 1;
+  string id = 2;
+}

@@ -45,19 +45,7 @@
           "alphabetize": {
             "order": "asc"
           },
-          "groups": [
-            ["builtin", "external"],
-            ["internal", "parent", "sibling", "index"]
-          ],
-          "newlines-between": "always",
-          "pathGroups": [
-            {
-              "group": "internal",
-              "pattern": "@(app|components|config|pages|services){,/**}",
-              "position": "before"
-            }
-          ],
-          "pathGroupsExcludedImportTypes": ["builtin"]
+          "newlines-between": "always"
         }
       ],
       "import/prefer-default-export": "off",

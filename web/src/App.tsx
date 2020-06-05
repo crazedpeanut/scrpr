@@ -1,4 +1,3 @@
-/* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from 'react';
 
 const baseUrl = 'http://localhost:5000';
@@ -105,6 +104,7 @@ const App: React.FC = () => {
                 {result.id}
                 <ul>
                   {result.entities.map((entity, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
                     <li key={i}>
                       Name: {entity.name}, raw: {entity.raw}, source: {entity.source}
                     </li>

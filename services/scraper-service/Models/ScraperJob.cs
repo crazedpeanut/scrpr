@@ -1,17 +1,19 @@
 using System;
 
-namespace Api.Models
+namespace ScraperService.Models
 {
-    public class ScraperJob: MongoEntity
+    public class ScraperJob
     {
         public ScraperJob() { }
-        public ScraperJob(string id, Uri url, ScraperJobStatus status, string error): base(id)
+        public ScraperJob(string id, Uri url, ScraperJobStatus status, string error)
         {
+            this.Id = id;
             this.Url = url;
             this.Status = status;
             this.Error = error;
         }
 
+        public string Id { get; set; }
         public Uri Url { get; set; }
         public ScraperJobStatus Status { get; set; }
         public string Error { get; set; }
@@ -19,8 +21,8 @@ namespace Api.Models
 
     public enum ScraperJobStatus
     {
-        Created,
-        Running,
-        Complete
+        Created = 0,
+        Running = 1,
+        Complete = 2
     }
 }
