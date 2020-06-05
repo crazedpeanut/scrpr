@@ -4,28 +4,24 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BeetleX.Redis;
 using ScraperService.Models;
+using shared;
 
 namespace ScraperService.Services
 {
     public class ScraperResultRepository
     {
         private readonly RedisDB db;
-        private const string baseKey = "/scraper-results/";
+        private readonly SharedConfiguration configuration;
 
-        public ScraperResultRepository(RedisDB db)
+        public ScraperResultRepository(RedisDB db, SharedConfiguration configuration)
         {
+            this.configuration = configuration;
             this.db = db;
         }
 
-        public async Task Create(ScraperJob job)
+        public async Task Create(ScraperResult job)
         {
-            job.Id = CreateId();
-            await db.Set(CreateKey(job), job);
-        }
-
-        public async Task<ScraperResult> Get(string id)
-        {
-            return await db.Get<ScraperResult>(CreateKey(id));
+            await db.Set(CreateKey(job), job, configuration.Cache.Items.ScraperResults.TTL);
         }
 
         public async Task<List<ScraperResult>> Get()
@@ -36,7 +32,7 @@ namespace ScraperService.Services
 
             do
             {
-                var scan = await db.Scan(cursor, 20, $"{baseKey}/*");
+                var scan = await db.Scan(cursor, 20, $"{configuration.Cache.Items.ScraperJobs.BaseKey}/*");
                 cursor = scan.NextCursor;
                 var scanResults = await db.MGet(scan.Keys.ToArray(), scan.Keys.Select(_ => typeof(ScraperJob)).ToArray());
                 results.AddRange(scanResults.Select(r => (ScraperResult)r));
@@ -48,11 +44,10 @@ namespace ScraperService.Services
 
         public async Task Update(ScraperResult job)
         {
-            await db.Set(CreateKey(job), job);
+            await db.Set(CreateKey(job), job, configuration.Cache.Items.ScraperResults.TTL);
         }
 
-        private string CreateId() => Guid.NewGuid().ToString();
         private string CreateKey(ScraperResult job) => CreateKey(job.Url);
-        private string CreateKey(Uri url) => $"{baseKey}/{url}";
+        private string CreateKey(Uri url) => $"{configuration.Cache.Items.ScraperJobs.BaseKey}/{url}";
     }
 }

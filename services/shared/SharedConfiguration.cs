@@ -5,6 +5,7 @@ namespace shared
     public class SharedConfiguration
     {
         public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
+        public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
         public QueueConfiguration Queue { get; set; } = new QueueConfiguration();
     }
 

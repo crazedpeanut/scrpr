@@ -1,23 +1,33 @@
+using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using ScraperService.Models;
 using shared;
 
-namespace scraper_service.Services
+namespace ScraperService.Services
 {
-    public class JobQueue
+    public class JobScheduler
     {
         private readonly ConnectionFactory connectionFactory;
         private readonly SharedConfiguration configuration;
-        public JobQueue(ConnectionFactory connectionFactory, SharedConfiguration configuration)
+        private readonly ScraperJobRepository jobRepository;
+        public JobScheduler(
+            ScraperJobRepository jobRepository,
+            ConnectionFactory connectionFactory,
+            SharedConfiguration configuration)
         {
+            this.jobRepository = jobRepository;
             this.configuration = configuration;
             this.connectionFactory = connectionFactory;
         }
 
-        public void Queue(ScraperJob job)
+        public async Task<string> Begin(ScraperJob job)
         {
+            await jobRepository.Create(job);
+
             using var connection = connectionFactory.CreateConnection();
             using var channel = connection.CreateModel();
 
@@ -36,6 +46,13 @@ namespace scraper_service.Services
                 routingKey: configuration.Queue.QueueNames.ScraperStart,
                 basicProperties: null,
                 body: body);
+
+            return job.Id;
+        }
+
+        public Task<List<ScraperJob>> List()
+        {
+            return jobRepository.Get();
         }
     }
 }

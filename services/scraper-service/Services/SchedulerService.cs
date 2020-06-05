@@ -11,10 +11,10 @@ namespace ScraperService.Services
 {
     public class SchedulerService : Scraper.Scheduler.SchedulerBase
     {
-        private readonly ScraperJobRepository jobRepository;
-        public SchedulerService(ScraperJobRepository jobRepository)
+        private readonly JobScheduler scheduler;
+        public SchedulerService(JobScheduler scheduler)
         {
-            this.jobRepository = jobRepository;
+            this.scheduler = scheduler;
         }
 
         public override async Task<ScraperJobResponse> Begin(ScraperJobRequest request, ServerCallContext context)
@@ -24,18 +24,26 @@ namespace ScraperService.Services
                 Url = new Uri(request.Url)
             };
 
-            await jobRepository.Create(job);
+            var jobId = await scheduler.Begin(job);
 
             return new ScraperJobResponse
             {
-                Id = job.Id,
-                Url = job.Url.ToString()
+                Id = jobId
             };
         }
 
-        public override Task List(Google.Protobuf.WellKnownTypes.Empty request, Grpc.Core.IServerStreamWriter<ScraperJob> responseStream, Grpc.Core.ServerCallContext context)
+        public override async Task List(Google.Protobuf.WellKnownTypes.Empty request, Grpc.Core.IServerStreamWriter<ScraperListResponse> responseStream, Grpc.Core.ServerCallContext context)
         {
-            return base.List(request, responseStream, context);
+            var jobs = await scheduler.List();
+
+            foreach (var job in jobs)
+            {
+                await responseStream.WriteAsync(new ScraperListResponse
+                {
+                    Id = job.Id,
+                    Url = job.Url.ToString()
+                });
+            }
         }
 
         public override Task Subscribe(Google.Protobuf.WellKnownTypes.Empty request, Grpc.Core.IServerStreamWriter<ScraperSchedulerEvent> responseStream, Grpc.Core.ServerCallContext context)

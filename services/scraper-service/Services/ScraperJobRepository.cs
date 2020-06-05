@@ -4,16 +4,18 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BeetleX.Redis;
 using ScraperService.Models;
+using shared;
 
 namespace ScraperService.Services
 {
     public class ScraperJobRepository
     {
         private readonly RedisDB db;
-        private const string baseKey = "/scraper-jobs/";
+        private readonly SharedConfiguration configuration;
 
-        public ScraperJobRepository(RedisDB db)
+        public ScraperJobRepository(RedisDB db, SharedConfiguration configuration)
         {
+            this.configuration = configuration;
             this.db = db;
         }
 
@@ -36,7 +38,7 @@ namespace ScraperService.Services
 
             do
             {
-                var scan = await db.Scan(cursor, 20, $"{baseKey}/*");
+                var scan = await db.Scan(cursor, 20, $"{configuration.Cache.Items.ScraperJobs.BaseKey}/*");
                 cursor = scan.NextCursor;
                 var scanResults = await db.MGet(scan.Keys.ToArray(), scan.Keys.Select(_ => typeof(ScraperJob)).ToArray());
                 results.AddRange(scanResults.Select(r => (ScraperJob)r));
@@ -53,6 +55,6 @@ namespace ScraperService.Services
 
         private string CreateId() => Guid.NewGuid().ToString();
         private string CreateKey(ScraperJob job) => CreateKey(job.Id);
-        private string CreateKey(string id) => $"{baseKey}/{id}";
+        private string CreateKey(string id) => $"{configuration.Cache.Items.ScraperJobs.BaseKey}/{id}";
     }
 }

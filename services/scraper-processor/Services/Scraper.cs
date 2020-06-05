@@ -1,32 +1,5 @@
-using System.Threading;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using HtmlAgilityPack;
-using PuppeteerSharp;
-using MongoDB.Bson.Serialization.Attributes;
-using Api.Models;
-
-namespace Api.Services
+namespace ScraperProcessor.Services
 {
-    public class ScraperService
-    {
-        private readonly ScraperFactory scraperFactory;
-
-        public ScraperService(ScraperFactory scraperFactory)
-        {
-            this.scraperFactory = scraperFactory;
-        }
-
-        public virtual Task<ScraperResult> ScrapeUrl(Uri url, CancellationToken cancellationToken)
-        {
-            return scraperFactory.GetScraper(url).Scrape(cancellationToken);
-        }
-    }
-
     public abstract class Scraper
     {
         protected virtual Browser Browser { get; set; }
