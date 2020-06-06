@@ -1,8 +1,26 @@
 version: "3.8"
 
 services:
-  api:
-    build: ./api
+  scraper-api:
+    restart: always
+    build: 
+      dockerfile: ./Scraper.Api/Dockerfile
+      context: ./services
+    env_file: local.env
+    ports: 
+      - 8080:80
+  scraper-service:
+    restart: always
+    build: 
+      dockerfile: ./Scraper.Service/Dockerfile
+      context: ./services
+    env_file: local.env
+  scraper-processor:
+    restart: always
+    build: 
+      dockerfile: ./Scraper.Service.Processor/Dockerfile
+      context: ./services
+    env_file: local.env
   web:
     build: ./web
   rabbit:
@@ -14,3 +32,5 @@ services:
     image: mongo
     ports:
       - 27017:27017
+  redis: 
+    image: redis

@@ -25,7 +25,6 @@ namespace Shared
         public CacheItemsConfiguration Items { get; set; } = new CacheItemsConfiguration();
     }
 
-
     public class CacheItemsConfiguration
     {
         public CacheItemConfiguration ScraperResults = new CacheItemConfiguration
@@ -39,7 +38,6 @@ namespace Shared
             TTL = 86400
         };
     }
-
 
     public class CacheItemConfiguration
     {
