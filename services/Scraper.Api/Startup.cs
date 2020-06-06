@@ -54,7 +54,7 @@ namespace Scraper.Api
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
-        private static Func<IServiceProvider, IMongoCollection<T>> MongoCollectionFactory<T>(string name) => (IServiceProvider serviceProvider) => serviceProvider.GetRequiredService<IMongoDatabase>().GetCollection<T>(name);
+        //private static Func<IServiceProvider, IMongoCollection<T>> MongoCollectionFactory<T>(string name) => (IServiceProvider serviceProvider) => serviceProvider.GetRequiredService<IMongoDatabase>().GetCollection<T>(name);
         private static Func<IServiceProvider, IMongoDatabase> MongoDatabaseFactory(DatabaseConfiguration configuration) => (_) =>
         {
             var settings = new MongoClientSettings();

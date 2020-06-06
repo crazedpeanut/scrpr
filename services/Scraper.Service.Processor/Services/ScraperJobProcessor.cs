@@ -3,6 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Scraper.Service.Data.Models;
 using Scraper.Service.Data.Services;
+using Google.Protobuf;
 
 namespace Scraper.Service.Processor.Services
 {
@@ -11,12 +12,16 @@ namespace Scraper.Service.Processor.Services
         private readonly ScraperJobRepository jobRespository;
         private readonly ScraperFactory scraperFactory;
         private readonly ScraperResultRepository resultRespository;
+        private readonly JobNotificationBroadcaster notificationBroadcaster;
+
         public ScraperJobProcessor(
             ScraperJobRepository jobRespository,
             ScraperFactory scraperFactory,
-            ScraperResultRepository resultRespository)
+            ScraperResultRepository resultRespository,
+            JobNotificationBroadcaster notificationBroadcaster)
         {
             this.resultRespository = resultRespository;
+            this.notificationBroadcaster = notificationBroadcaster;
             this.jobRespository = jobRespository;
             this.scraperFactory = scraperFactory;
         }
@@ -24,9 +29,10 @@ namespace Scraper.Service.Processor.Services
         public async Task Process(ScraperJobMessage message, CancellationToken cancellationToken)
         {
             var job = await jobRespository.Get(message.Id);
-            job.Status = ScraperJobStatus.Running;
+            job.Status = Data.Models.ScraperJobStatus.Running;
 
             await jobRespository.Update(job);
+            notificationBroadcaster.Emit(job);
 
             ScraperResult result = null;
 
@@ -40,7 +46,7 @@ namespace Scraper.Service.Processor.Services
             }
             finally
             {
-                job.Status = ScraperJobStatus.Complete;
+                job.Status = Data.Models.ScraperJobStatus.Complete;
             }
 
             if (result != null)
@@ -49,6 +55,7 @@ namespace Scraper.Service.Processor.Services
             }
 
             await jobRespository.Update(job);
+            notificationBroadcaster.Emit(job);
         }
     }
 }

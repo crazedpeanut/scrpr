@@ -2,3 +2,4 @@ node_modules/
 bin/
 obj/
 .local-chromium/
+.env.development

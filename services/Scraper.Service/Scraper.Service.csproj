@@ -7,6 +7,7 @@
     <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Protobuf Include="..\Shared\contracts\scraper-job.proto" GrpcServices="Client" />
     <Protobuf Include="..\Shared\contracts\scraper-results.proto" GrpcServices="Server" />
     <Protobuf Include="..\Shared\contracts\scraper-scheduler.proto" GrpcServices="Server" />
   </ItemGroup>

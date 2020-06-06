@@ -64,6 +64,12 @@ namespace Shared
     {
         public string Host { get; set; }
         public QueueNames QueueNames { get; set; } = new QueueNames();
+        public ExchangeNames ExchangeNames { get; set; } = new ExchangeNames();
+    }
+
+    public class ExchangeNames
+    {
+        public string ScraperJobStatus { get; set; } = "scraper-job-status";
     }
 
     public class QueueNames

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Scraper.Service.Data.Models;
@@ -31,21 +32,21 @@ namespace Scraper.Service.Services
             };
         }
 
-        public override async Task List(Google.Protobuf.WellKnownTypes.Empty request, Grpc.Core.IServerStreamWriter<ScraperListResponse> responseStream, Grpc.Core.ServerCallContext context)
+        public override async Task<ScraperListResponse> List(Empty request, ServerCallContext context)
         {
-            var jobs = await scheduler.List();
+            var results = await scheduler.List();
 
-            foreach (var job in jobs)
+            var response = new ScraperListResponse();
+            response.Results.AddRange(results.Select(r => new ScraperListResponseItem
             {
-                await responseStream.WriteAsync(new ScraperListResponse
-                {
-                    Id = job.Id,
-                    Url = job.Url.ToString()
-                });
-            }
+                Id = r.Id,
+                Url = r.Url.ToString()
+            }));
+
+            return response;
         }
 
-        public override Task Subscribe(Google.Protobuf.WellKnownTypes.Empty request, Grpc.Core.IServerStreamWriter<ScraperSchedulerEvent> responseStream, Grpc.Core.ServerCallContext context)
+        public override Task Subscribe(Empty request, IServerStreamWriter<ScraperSchedulerEvent> responseStream, ServerCallContext context)
         {
             return base.Subscribe(request, responseStream, context);
         }

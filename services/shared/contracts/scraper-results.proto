@@ -2,16 +2,20 @@ syntax = "proto3";
 
 option csharp_namespace = "Scraper";
 
-package scraper_results;
+package scraper;
 
 service SchedulerResults {
-  rpc Query (QueryRequest) returns (stream QueryResponse);
+  rpc Query (QueryRequest) returns (QueryResponse);
 }
 
 message QueryRequest {
   string url = 1;
 }
 
-message QueryResponse {
+message QueryResponseItem {
   string url = 1;
+}
+
+message QueryResponse {
+  repeated QueryResponseItem results = 1;
 }

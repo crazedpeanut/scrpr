@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6,11 +7,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using ProtoBuf;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using Scraper.Service.Data.Models;
 using Scraper.Service.Processor.Services;
 using Shared;
+using Scraper;
 
 namespace Scraper.Service.Processor
 {
@@ -44,12 +47,16 @@ namespace Scraper.Service.Processor
                 autoDelete: false,
                 arguments: null);
 
+            channel.BasicQos(0, 1, false);
+
             var consumer = new EventingBasicConsumer(channel);
 
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
-                var message = JsonConvert.DeserializeObject<ScraperJobMessage>(Encoding.UTF8.GetString(body.ToArray()));
+                using var stream = new MemoryStream(body.ToArray());
+
+                var message = Serializer.Deserialize<ScraperJobMessage>(stream);
 
                 using var scope = serviceProvider.CreateScope();
 
@@ -64,6 +71,7 @@ namespace Scraper.Service.Processor
                     logger.LogError(e, "Unable to process message");
                 }
             };
+
             channel.BasicConsume(
                 queue: configuration.Queue.QueueNames.ScraperStart,
                 autoAck: true,

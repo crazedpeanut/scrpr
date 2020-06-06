@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+import "scraper-job-status.proto";
+
+option csharp_namespace = "Scraper";
+
+package scraper;
+
+message ScraperJobMessage {
+  string url = 1;
+  string id = 2;
+  ScraperJobStatus status = 3;
+}
+
+message ScraperJobChangeNotification {
+  string url = 1;
+  string id = 2;
+  ScraperJobStatus status = 3;
+}

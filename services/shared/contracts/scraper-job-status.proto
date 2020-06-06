@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+option csharp_namespace = "Scraper";
+
+package scraper;
+
+enum ScraperJobStatus {
+    CREATED = 0;
+    RUNNING = 1;
+    COMPLETE = 2;
+}

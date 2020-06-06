@@ -6,6 +6,7 @@ using Shared;
 using Scraper.Service.Data.Models;
 using Scraper.Service.Data.Services;
 using Newtonsoft.Json;
+using Google.Protobuf;
 
 namespace Scraper.Service.Services
 {
@@ -41,10 +42,10 @@ namespace Scraper.Service.Services
             var message = new ScraperJobMessage
             {
                 Id = job.Id,
-                Url = job.Url
+                Url = job.Url.ToString()
             };
 
-            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
+            var body = message.ToByteArray();
 
             var properties = channel.CreateBasicProperties();
             properties.Persistent = true;

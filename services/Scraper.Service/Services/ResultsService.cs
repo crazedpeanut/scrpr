@@ -5,20 +5,28 @@ using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Scraper;
+using Scraper.Service.Data.Services;
 
 namespace Scraper.Service.Services
 {
     public class ResultsService : SchedulerResults.SchedulerResultsBase
     {
-        private readonly ILogger<ResultsService> _logger;
-        public ResultsService(ILogger<ResultsService> logger)
+        private readonly ScraperResultRepository resultRepository;
+        public ResultsService(ScraperResultRepository resultRepository)
         {
-            _logger = logger;
+            this.resultRepository = resultRepository;
         }
 
-        public override Task Query(QueryRequest request, Grpc.Core.IServerStreamWriter<QueryResponse> responseStream, Grpc.Core.ServerCallContext context)
+        public override async Task<QueryResponse> Query(QueryRequest request, ServerCallContext context)
         {
-            return base.Query(request, responseStream, context);
+            var results = await resultRepository.Get(new Uri(request.Url));
+
+            var response = new QueryResponse();
+            response.Results.AddRange(results.Select(r => new QueryResponseItem
+            {
+                Url = r.Url.ToString()
+            }));
+            return response;
         }
     }
 }

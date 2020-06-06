@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { config } from './services/config';
 
-const baseUrl = 'http://localhost:5000';
+import React, { useEffect, useState } from 'react';
 
 interface Entity {
   name: string;
@@ -19,7 +19,7 @@ interface ScraperJob {
 }
 
 const scheduleScraper = (url: string): Promise<Response> =>
-  fetch(`${baseUrl}/scraperjobs`, {
+  fetch(`${config.apiBaseUrl}/scraperjobs`, {
     body: JSON.stringify({
       url
     }),
@@ -30,7 +30,7 @@ const scheduleScraper = (url: string): Promise<Response> =>
   });
 
 const getScraperJobs = (): Promise<ScraperJob[]> =>
-  fetch(`${baseUrl}/scraperjobs`, {
+  fetch(`${config.apiBaseUrl}/scraperjobs`, {
     method: 'GET'
   }).then((r) => {
     if (r.status !== 200) {
@@ -40,7 +40,7 @@ const getScraperJobs = (): Promise<ScraperJob[]> =>
   });
 
 const getResults = (url: string): Promise<ScraperResult[]> =>
-  fetch(`${baseUrl}/scraperresults/${encodeURIComponent(url)}`, {
+  fetch(`${config.apiBaseUrl}/scraperresults/${encodeURIComponent(url)}`, {
     method: 'GET'
   }).then((r) => {
     if (r.status !== 200) {

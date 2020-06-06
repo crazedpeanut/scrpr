@@ -24,7 +24,7 @@ namespace Scraper.Service.Data.Services
             await db.Set(CreateKey(job), job, configuration.Cache.Items.ScraperResults.TTL);
         }
 
-        public async Task<List<ScraperResult>> Get()
+        public async Task<List<ScraperResult>> Get(Uri url)
         {
             var cursor = 0;
 
@@ -32,7 +32,7 @@ namespace Scraper.Service.Data.Services
 
             do
             {
-                var scan = await db.Scan(cursor, 20, $"{configuration.Cache.Items.ScraperJobs.BaseKey}/*");
+                var scan = await db.Scan(cursor, 20, $"{configuration.Cache.Items.ScraperJobs.BaseKey}/{url}/*");
                 cursor = scan.NextCursor;
                 var scanResults = await db.MGet(scan.Keys.ToArray(), scan.Keys.Select(_ => typeof(ScraperJob)).ToArray());
                 results.AddRange(scanResults.Select(r => (ScraperResult)r));
@@ -47,7 +47,7 @@ namespace Scraper.Service.Data.Services
             await db.Set(CreateKey(job), job, configuration.Cache.Items.ScraperResults.TTL);
         }
 
-        private string CreateKey(ScraperResult job) => CreateKey(job.Url);
-        private string CreateKey(Uri url) => $"{configuration.Cache.Items.ScraperJobs.BaseKey}/{url}";
+        private string CreateKey(ScraperResult job) => CreateKey(job.Url, job.Timestamp);
+        private string CreateKey(Uri url, DateTime timestamp) => $"{configuration.Cache.Items.ScraperJobs.BaseKey}/{url}/{timestamp}";
     }
 }
