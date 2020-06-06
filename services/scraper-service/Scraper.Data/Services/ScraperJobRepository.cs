@@ -3,10 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BeetleX.Redis;
-using ScraperService.Models;
-using shared;
+using Shared;
+using Scraper.Data.Models;
 
-namespace ScraperService.Services
+namespace Scraper.Data.Services
 {
     public class ScraperJobRepository
     {

@@ -6,9 +6,9 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ScraperService.Services;
+using Scraper.Service.Services;
 
-namespace ScraperService
+namespace Scraper.Service
 {
     public class Startup
     {

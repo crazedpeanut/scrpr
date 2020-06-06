@@ -1,12 +1,13 @@
+using System.Text;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using RabbitMQ.Client;
-using Scraper;
-using ScraperService.Models;
-using shared;
+using Shared;
+using Scraper.Data.Models;
+using Scraper.Data.Services;
+using Newtonsoft.Json;
 
-namespace ScraperService.Services
+namespace Scraper.Service.Services
 {
     public class JobScheduler
     {
@@ -37,13 +38,13 @@ namespace ScraperService.Services
                 autoDelete: false,
                 arguments: null);
 
-            var message = new ScraperJobQueueMessage
+            var message = new ScraperJobMessage
             {
                 Id = job.Id,
-                Url = job.Url.ToString()
+                Url = job.Url
             };
 
-            var body = message.ToByteArray();
+            var body = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(message));
 
             channel.BasicPublish(
                 exchange: "",

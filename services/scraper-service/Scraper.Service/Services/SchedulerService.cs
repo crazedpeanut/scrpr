@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
-using Scraper;
-using ScraperService.Models;
+using Scraper.Data.Models;
 
-namespace ScraperService.Services
+namespace Scraper.Service.Services
 {
     public class SchedulerService : Scraper.Scheduler.SchedulerBase
     {

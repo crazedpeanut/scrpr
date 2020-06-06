@@ -1,6 +1,6 @@
 using System;
 
-namespace ScraperService.Models
+namespace Scraper.Data.Models
 {
     public class ScraperJob
     {

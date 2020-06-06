@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace ScraperProcessor
+namespace Scraper.Processor
 {
     public class Program
     {
@@ -16,9 +16,6 @@ namespace ScraperProcessor
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
-                {
-                    services.AddHostedService<Worker>();
-                });
+                .ConfigureServices((services) => services.AddHostedService<Worker>());
     }
 }

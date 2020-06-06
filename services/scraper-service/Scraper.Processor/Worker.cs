@@ -5,11 +5,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using Google.Protobuf;
+using Scraper.Data.Models;
+using Scraper.Processor.Services;
+using Shared;
 
-namespace ScraperProcessor
+namespace Scraper.Processor
 {
     public class Worker : BackgroundService
     {
@@ -46,11 +49,11 @@ namespace ScraperProcessor
             consumer.Received += (model, ea) =>
             {
                 var body = ea.Body;
-
+                var message = JsonConvert.DeserializeObject<ScraperJobMessage>(Encoding.UTF8.GetString(body.ToArray()));
 
                 using var scope = serviceProvider.CreateScope();
 
-                var jobProcessor = scope.ServiceProvider.GetRequiredService<ScraperJobProcessor>();    
+                var jobProcessor = scope.ServiceProvider.GetRequiredService<ScraperJobProcessor>();
 
                 try
                 {

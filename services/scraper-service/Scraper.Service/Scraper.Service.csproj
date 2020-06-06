@@ -3,20 +3,20 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
   </PropertyGroup>
   <PropertyGroup>
-    <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Protobuf Include="..\..\contracts\scraper-results.proto" GrpcServices="Server"/>
-    <Protobuf Include="..\..\contracts\scraper-scheduler.proto" GrpcServices="Server"/>
-    <Protobuf Include="..\..\contracts\scraper-job.proto" GrpcServices="Server"/>
+    <Protobuf Include="..\..\shared\contracts\scraper-results.proto" GrpcServices="Server"/>
+    <Protobuf Include="..\..\shared\contracts\scraper-scheduler.proto" GrpcServices="Server"/>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.24.0"/>
-    <PackageReference Include="BeetleX.Redis" Version="0.9.7.8"/>
     <PackageReference Include="RabbitMQ.Client" Version="6.0.0"/>
     <PackageReference Include="Google.Protobuf" Version="3.12.3"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\shared\shared.csproj"/>
+    <ProjectReference Include="..\..\shared\Shared.csproj"/>
+    <ProjectReference Include="..\Scraper.Data\Scraper.Data.csproj"/>
   </ItemGroup>
 </Project>

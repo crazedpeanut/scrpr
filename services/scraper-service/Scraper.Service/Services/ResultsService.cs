@@ -6,7 +6,7 @@ using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using Scraper;
 
-namespace ScraperService.Services
+namespace Scraper.Service.Services
 {
     public class ResultsService : SchedulerResults.SchedulerResultsBase
     {

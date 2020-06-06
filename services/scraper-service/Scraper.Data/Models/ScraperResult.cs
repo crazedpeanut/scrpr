@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ScraperService.Models
+namespace Scraper.Data.Models
 {
     public class ScraperResult
     {
