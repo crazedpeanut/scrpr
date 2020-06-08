@@ -1,0 +1,35 @@
+type ScraperSource{
+	id: ID!
+	collector: Collector!
+}
+
+type WebCollector{
+	target: String!
+}
+
+union Collector = WebCollector
+
+type Query{
+	source(
+		id: ID!
+	): ScraperSource!
+	sources(skip: Int = 0, take: Int = 50): [ScraperSource!]!
+}
+
+input WebCollectorInput{
+	target: String!
+}
+
+input WebSourceInput{
+	url: String!
+}
+
+type Mutation{
+	createWebSource(
+		source: WebSourceInput!
+	): String!
+}
+schema{
+	query: Query,
+	mutation: Mutation
+}

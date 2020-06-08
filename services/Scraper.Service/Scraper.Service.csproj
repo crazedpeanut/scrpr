@@ -7,18 +7,14 @@
     <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Protobuf Include="..\Shared\contracts\scraper-job.proto" GrpcServices="Client" />
-    <Protobuf Include="..\Shared\contracts\scraper-results.proto" GrpcServices="Server" />
-    <Protobuf Include="..\Shared\contracts\scraper-scheduler.proto" GrpcServices="Server" />
+    <Protobuf Include="..\Scraper.Contracts\grpc-protos\scraper-service.proto" GrpcServices="Server" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Grpc.AspNetCore" Version="2.24.0" />
     <PackageReference Include="RabbitMQ.Client" Version="6.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.12.3" />
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj" />
     <ProjectReference Include="..\Scraper.Service.Data\Scraper.Service.Data.csproj" />
   </ItemGroup>
 </Project>

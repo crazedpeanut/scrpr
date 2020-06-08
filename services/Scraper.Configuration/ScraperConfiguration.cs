@@ -1,12 +1,23 @@
 ﻿using System;
 
-namespace Shared
+namespace Scraper.Configuration
 {
-    public class SharedConfiguration
+    public class ScraperConfiguration
     {
         public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
         public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
         public QueueConfiguration Queue { get; set; } = new QueueConfiguration();
+        public ServicesConfiguration Services { get; set; } = new ServicesConfiguration();
+    }
+
+    public class ServiceConfiguration
+    {
+        public string BaseUrl { get; set; }
+    }
+
+    public class ServicesConfiguration
+    {
+        public ServiceConfiguration Scraper { get; set; } = new ServiceConfiguration();
     }
 
     public class DatabaseConfiguration
@@ -54,9 +65,9 @@ namespace Shared
 
     public class CollectionsConfiguration
     {
-        public CollectionConfiguration Sample = new CollectionConfiguration
+        public CollectionConfiguration ScraperSources = new CollectionConfiguration
         {
-            Name = "sample"
+            Name = "scraper-source"
         };
     }
 

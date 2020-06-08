@@ -9,14 +9,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using Scraper.Service.Data;
-using Scraper.Service.Services;
-using Shared;
+using Scraper.Configuration;
 
 namespace Scraper.Service
 {
     public class Startup
     {
-        private readonly SharedConfiguration configuration = new SharedConfiguration();
+        private readonly ScraperConfiguration configuration = new ScraperConfiguration();
 
         public Startup(IConfiguration configuration)
         {
@@ -29,7 +28,7 @@ namespace Scraper.Service
                 .AddSingleton(new ConnectionFactory() { HostName = configuration.Queue.Host })
                 .AddDataServices(configuration);
 
-            services.AddGrpc();
+            services.AddGrpc(options => options.EnableDetailedErrors = true);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -41,11 +40,7 @@ namespace Scraper.Service
 
             app.UseRouting();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapGrpcService<SchedulerService>();
-                endpoints.MapGrpcService<ResultsService>();
-            });
+            app.UseEndpoints(endpoints => endpoints.MapGrpcService<Services.ScraperService>());
         }
     }
 }

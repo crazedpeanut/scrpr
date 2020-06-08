@@ -9,9 +9,9 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceFolder}/api/Api/bin/Debug/netcoreapp3.1/Api.dll",
+            "program": "${workspaceFolder}/services/Scraper.Api/bin/Debug/netcoreapp3.1/Scraper.Api.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/api/Api",
+            "cwd": "${workspaceFolder}/services/Scraper.Api",
             "stopAtEntry": false,
             "serverReadyAction": {
                 "action": "openExternally",
@@ -19,9 +19,6 @@
             },
             "env": {
                 "ASPNETCORE_ENVIRONMENT": "Development"
-            },
-            "sourceFileMap": {
-                "/Views": "${workspaceFolder}/Views"
             }
         },
         {

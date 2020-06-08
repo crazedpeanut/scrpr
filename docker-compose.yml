@@ -15,12 +15,8 @@ services:
       dockerfile: ./Scraper.Service/Dockerfile
       context: ./services
     env_file: local.env
-  scraper-processor:
-    restart: always
-    build: 
-      dockerfile: ./Scraper.Service.Processor/Dockerfile
-      context: ./services
-    env_file: local.env
+    ports: 
+      - 8081:80
   web:
     build: ./web
   rabbit:

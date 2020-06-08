@@ -6,10 +6,10 @@
     <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="BeetleX.Redis" Version="0.9.7.8"/>
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj"/>
+    <ProjectReference Include="..\Scraper.Configuration\Scraper.Configuration.csproj"/>
+    <ProjectReference Include="..\Scraper.Mongo\Scraper.Mongo.csproj"/>
   </ItemGroup>
 </Project>

@@ -7,10 +7,24 @@
     <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
-    <PackageReference Include="MongoDB.Driver" Version="2.10.4"/>
+    <Protobuf Include="..\Scraper.Contracts\grpc-protos\scraper-service.proto" GrpcServices="Client"/>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Shared\Shared.csproj"/>
+    <ProjectReference Include="..\Scraper.Contracts\Scraper.Contracts.csproj"/>
+    <ProjectReference Include="..\Scraper.Configuration\Scraper.Configuration.csproj"/>
+    <ProjectReference Include="..\Scraper.Mongo\Scraper.Mongo.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="GraphQL.Server.Transports.AspNetCore.SystemTextJson" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="GraphQL-Parser" Version="5.1.2"/>
+    <PackageReference Include="Google.Protobuf" Version="3.12.3"/>
+    <PackageReference Include="Grpc.Net.Client" Version="2.29.0"/>
+    <PackageReference Include="Grpc.Tools" Version="2.29.0"/>
+    <PackageReference Include="GraphQL.Server.Ui.Altair" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="GraphQL.Server.Ui.GraphiQL" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="GraphQL.Server.Ui.Playground" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="GraphQL.Server.Ui.Voyager" Version="3.5.0-alpha0046"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
   </ItemGroup>
 </Project>
