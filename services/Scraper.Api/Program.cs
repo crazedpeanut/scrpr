@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices.ComTypes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +19,12 @@ namespace Scraper.Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+            .ConfigureAppConfiguration(_ =>
+            {
+                _
+                    .AddJsonFile("appsettings.json", true)
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower()}.json")
+                    .AddEnvironmentVariables();
+            }).ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
     }
 }

@@ -104,7 +104,6 @@ namespace Scraper.Service.Services
             }
         }
 
-
         private static Any MapCollectorProperties(CollectorProperties properties)
         {
             if (properties.CollectorKind == WebCollectorProperties.Kind && properties is WebCollectorProperties value)

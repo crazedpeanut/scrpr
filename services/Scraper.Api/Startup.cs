@@ -54,6 +54,9 @@ namespace Scraper.Api
                 new Services.ScraperService(new Scraper.ScraperService.ScraperServiceClient(
                     GrpcChannel.ForAddress(configuration.Services.Scraper.BaseUrl))));
 
+
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
             services
                 .AddSingleton(SchemaBuilder.Create)
                 .AddGraphQL((provider, options) =>

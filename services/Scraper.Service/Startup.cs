@@ -28,7 +28,11 @@ namespace Scraper.Service
                 .AddSingleton(new ConnectionFactory() { HostName = configuration.Queue.Host })
                 .AddDataServices(configuration);
 
-            services.AddGrpc(options => options.EnableDetailedErrors = true);
+            services
+                .AddGrpc(options => {
+                    options.EnableDetailedErrors = true
+                    options.Interceptors
+                });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
