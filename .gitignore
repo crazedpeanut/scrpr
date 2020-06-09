@@ -3,3 +3,4 @@ bin/
 obj/
 .local-chromium/
 .env.development
+appsettings.[dD]evelopment.json

@@ -29,9 +29,9 @@ namespace Scraper.Service
                 .AddDataServices(configuration);
 
             services
-                .AddGrpc(options => {
-                    options.EnableDetailedErrors = true
-                    options.Interceptors
+                .AddGrpc(options =>
+                {
+                    options.EnableDetailedErrors = true;
                 });
         }
 
