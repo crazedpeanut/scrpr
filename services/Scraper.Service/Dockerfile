@@ -2,7 +2,7 @@ FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build
 
 COPY ./.ruleset ./
 COPY ./Scraper.Service ./Scraper.Service
-COPY ./Scraper.Service.Data ./Scraper.Service.Data
+COPY ./Scraper.Service.Core ./Scraper.Service.Core
 COPY ./Scraper.Contracts ./Scraper.Contracts
 COPY ./Scraper.Configuration ./Scraper.Configuration
 COPY ./Scraper.Mongo ./Scraper.Mongo

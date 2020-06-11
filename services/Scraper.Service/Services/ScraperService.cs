@@ -4,22 +4,25 @@ using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using Scraper.Mongo;
-using Scraper.Service.Data.Models;
+using Scraper.Service.Core.Models;
+using Scraper.Service.Core.Services;
 
 namespace Scraper.Service.Services
 {
     public class ScraperService : Scraper.ScraperService.ScraperServiceBase
     {
-        private readonly IRepository<Data.Models.ScraperSource> scraperSources;
+        private readonly IRepository<Core.Models.ScraperSource> scraperSources;
+        private readonly ScraperJobPublisher jobPublisher;
 
-        public ScraperService(IRepository<Data.Models.ScraperSource> scraperSources)
+        public ScraperService(IRepository<Core.Models.ScraperSource> scraperSources, ScraperJobPublisher jobPublisher)
         {
+            this.jobPublisher = jobPublisher;
             this.scraperSources = scraperSources;
         }
 
         public override async Task<CreateSourceResponse> CreateSource(CreateSourceRequest request, Grpc.Core.ServerCallContext context)
         {
-            var source = new Data.Models.ScraperSource()
+            var source = new Core.Models.ScraperSource()
             {
                 Collector = MapCollectorProperties(request.Collector)
             };
@@ -65,7 +68,7 @@ namespace Scraper.Service.Services
 
         public override async Task<Empty> UpdateSource(UpdateSourceRequest request, Grpc.Core.ServerCallContext context)
         {
-            var source = new Data.Models.ScraperSource()
+            var source = new Core.Models.ScraperSource()
             {
                 Collector = MapCollectorProperties(request.Collector),
                 Id = request.Id
@@ -115,6 +118,21 @@ namespace Scraper.Service.Services
             }
 
             throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown collector"));
+        }
+
+        public override async Task<StartResponse> Start(StartRequest request, ServerCallContext context)
+        {
+            var job = new Core.Models.ScraperJob()
+            {
+                Collector = MapCollectorProperties(request.Collector),
+                // FIXME: Sorry excuse for authentication
+                RequesterId = context.GetHttpContext().Request.Headers["clientId"].FirstOrDefault()
+            };
+
+            return new StartResponse
+            {
+                Id = await jobPublisher.Publish(job)
+            };
         }
     }
 }

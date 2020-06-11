@@ -8,7 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
-using Scraper.Service.Data;
+using Scraper.Service.Core;
 using Scraper.Configuration;
 
 namespace Scraper.Service

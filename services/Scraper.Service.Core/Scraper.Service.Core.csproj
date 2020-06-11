@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+  <PropertyGroup>
+    <CodeAnalysisRuleSet>..\.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="3.1.0"/>
+    <PackageReference Include="RabbitMQ.Client" Version="6.1.0"/>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3"/>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Scraper.Configuration\Scraper.Configuration.csproj"/>
+    <ProjectReference Include="..\Scraper.Mongo\Scraper.Mongo.csproj"/>
+  </ItemGroup>
+  <ItemGroup>
+    <Protobuf Include="..\Scraper.Contracts\grpc-protos\scraper-service.proto" GrpcServices="Client"/>
+  </ItemGroup>
+</Project>

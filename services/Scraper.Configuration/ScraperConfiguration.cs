@@ -5,7 +5,6 @@ namespace Scraper.Configuration
     public class ScraperConfiguration
     {
         public DatabaseConfiguration Database { get; set; } = new DatabaseConfiguration();
-        public CacheConfiguration Cache { get; set; } = new CacheConfiguration();
         public QueueConfiguration Queue { get; set; } = new QueueConfiguration();
         public ServicesConfiguration Services { get; set; } = new ServicesConfiguration();
     }
@@ -31,33 +30,6 @@ namespace Scraper.Configuration
         public CollectionsConfiguration Collections { get; set; } = new CollectionsConfiguration();
     }
 
-    public class CacheConfiguration
-    {
-        public CacheItemsConfiguration Items { get; set; } = new CacheItemsConfiguration();
-    }
-
-    public class CacheItemsConfiguration
-    {
-        public CacheItemConfiguration ScraperResults = new CacheItemConfiguration
-        {
-            BaseKey = "/scraper-results"
-        };
-
-        public CacheItemConfiguration ScraperJobs = new CacheItemConfiguration
-        {
-            BaseKey = "/scraper-jobs",
-            TTL = 86400
-        };
-    }
-
-    public class CacheItemConfiguration
-    {
-        public string BaseKey { get; set; }
-
-        //Seconds
-        public int? TTL { get; set; }
-    }
-
     public class CollectionConfiguration
     {
         public string Name { get; set; }
@@ -68,6 +40,11 @@ namespace Scraper.Configuration
         public CollectionConfiguration ScraperSources = new CollectionConfiguration
         {
             Name = "scraper-source"
+        };
+
+        public CollectionConfiguration ScraperJobs = new CollectionConfiguration
+        {
+            Name = "scraper-job"
         };
     }
 
@@ -80,11 +57,10 @@ namespace Scraper.Configuration
 
     public class ExchangeNames
     {
-        public string ScraperJobStatus { get; set; } = "scraper-job-status";
+        public string ScraperStart { get; set; } = "scraper-start";
     }
 
     public class QueueNames
     {
-        public string ScraperStart { get; set; } = "scraper-start";
     }
 }

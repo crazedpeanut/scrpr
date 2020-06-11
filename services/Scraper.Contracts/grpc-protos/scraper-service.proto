@@ -8,11 +8,21 @@ option csharp_namespace = "Scraper";
 package scraper;
 
 service ScraperService {
+  rpc Start (StartRequest) returns (StartResponse);
   rpc CreateSource (CreateSourceRequest) returns (CreateSourceResponse);
   rpc ListSources (ListSourcesRequest) returns (ListSourcesResponse);
   rpc GetSource (GetSourceRequest) returns (GetSourceResponse);
   rpc DeleteSource(DeleteSourceRequest) returns (google.protobuf.Empty);
   rpc UpdateSource(UpdateSourceRequest) returns (google.protobuf.Empty);
+}
+
+
+message StartRequest {
+  google.protobuf.Any collector = 1;
+}
+
+message StartResponse {
+  string id = 1;
 }
 
 message CreateSourceRequest {
