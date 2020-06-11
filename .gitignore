@@ -4,3 +4,4 @@ obj/
 .local-chromium/
 .env.development
 appsettings.[dD]evelopment.json
+target/

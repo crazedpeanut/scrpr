@@ -30,3 +30,30 @@ services:
       - 27017:27017
   redis: 
     image: redis
+  zookeeper:
+    image: zookeeper
+    restart: always
+  nimbus:
+    image: storm
+    command: storm nimbus
+    depends_on:
+      - zookeeper
+    restart: always
+    ports:
+      - 6627:6627
+  supervisor:
+    image: storm
+    command: storm supervisor
+    depends_on:
+      - nimbus
+      - zookeeper
+    restart: always
+  storm-ui:
+    ports: 
+      - 8090:8080
+    image: storm
+    command: storm ui
+    depends_on:
+      - nimbus
+      - zookeeper
+    restart: always    
