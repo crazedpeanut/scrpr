@@ -9,6 +9,8 @@ using Scraper.Service.Core.Services;
 
 namespace Scraper.Service.Services
 {
+    // TODO: Input Validation.
+    // AuthContext Validation
     public class ScraperService : Scraper.ScraperService.ScraperServiceBase
     {
         private readonly IRepository<Core.Models.ScraperSource> scraperSources;
@@ -24,7 +26,8 @@ namespace Scraper.Service.Services
         {
             var source = new Core.Models.ScraperSource()
             {
-                Collector = MapCollectorProperties(request.Collector)
+                Collector = MapCollectorProperties(request.Collector),
+                OwnerServiceId = context.AuthContext.FindPropertiesByName("clientId").SingleOrDefault()?.Value
             };
 
             await scraperSources.Create(source, context.CancellationToken);
@@ -71,6 +74,7 @@ namespace Scraper.Service.Services
             var source = new Core.Models.ScraperSource()
             {
                 Collector = MapCollectorProperties(request.Collector),
+                OwnerServiceId = context.AuthContext.FindPropertiesByName("clientId").SingleOrDefault()?.Value,
                 Id = request.Id
             };
 
@@ -125,8 +129,7 @@ namespace Scraper.Service.Services
             var job = new Core.Models.ScraperJob()
             {
                 Collector = MapCollectorProperties(request.Collector),
-                // FIXME: Sorry excuse for authentication
-                RequesterId = context.GetHttpContext().Request.Headers["clientId"].FirstOrDefault()
+                OwnerServiceId = context.AuthContext.FindPropertiesByName("clientId").SingleOrDefault()?.Value
             };
 
             return new StartResponse

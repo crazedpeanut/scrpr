@@ -26,7 +26,7 @@ namespace Scraper.Api.Services
             return response.Results.Select(_ => new Models.ScraperSource
             {
                 Id = _.Id,
-                Collector = MapQueryCollector(_.Collector)
+                Collector = MapCollector(_.Collector)
             }).ToList();
         }
 
@@ -40,11 +40,21 @@ namespace Scraper.Api.Services
             return new Models.ScraperSource
             {
                 Id = response.Result.Id,
-                Collector = MapQueryCollector(response.Result.Collector)
+                Collector = MapCollector(response.Result.Collector)
             };
         }
 
-        private Collector MapQueryCollector(Any value)
+        public async Task<string> CreateSource(Models.ScraperSource source)
+        {
+            var response = await client.CreateSourceAsync(new CreateSourceRequest
+            {
+                Collector = MapCollector(source.Collector),
+            });
+
+            return response.Id;
+        }
+
+        private Collector MapCollector(Any value)
         {
             if (value.Is(WebCollector.Descriptor) && value.TryUnpack<WebCollector>(out var collector))
             {
@@ -52,6 +62,19 @@ namespace Scraper.Api.Services
                 {
                     Target = collector.Target
                 };
+            }
+
+            throw new System.Exception("Unknown collector type");
+        }
+
+        private Any MapCollector(Models.Collector collector)
+        {
+            if (collector is Models.WebCollector value)
+            {
+                return Any.Pack(new WebCollector
+                {
+                    Target = value.Target
+                });
             }
 
             throw new System.Exception("Unknown collector type");

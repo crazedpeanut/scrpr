@@ -12,6 +12,7 @@ namespace Scraper.Configuration
     public class ServiceConfiguration
     {
         public string BaseUrl { get; set; }
+        public string Certificate { get; set; }
     }
 
     public class ServicesConfiguration

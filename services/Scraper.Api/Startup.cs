@@ -17,6 +17,9 @@ using GraphQL.Server.Ui.Voyager;
 using Grpc.Net.Client;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using System.Net.Http;
+using Grpc.Core;
+using System.Threading.Tasks;
 
 namespace Scraper.Api
 {
@@ -51,11 +54,33 @@ namespace Scraper.Api
                 .AddMongoDb(configuration.Database);
 
             services.AddSingleton<Services.ScraperService>(_ =>
-                new Services.ScraperService(new Scraper.ScraperService.ScraperServiceClient(
-                    GrpcChannel.ForAddress(configuration.Services.Scraper.BaseUrl))));
+            {
+                var credentials = CallCredentials.FromInterceptor((context, metadata) =>
+                {
+                    metadata.Add("clientId", $"scraper-api");
+                    return Task.CompletedTask;
+                });
 
+                var channelOptions = new GrpcChannelOptions
+                {
+                    Credentials = ChannelCredentials.Create(new SslCredentials(), credentials)
+                };
 
-            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+                if (env.IsDevelopment())
+                {
+                    var httpClientHandler = new HttpClientHandler
+                    {
+                        ServerCertificateCustomValidationCallback = HttpClientHandler.DangerousAcceptAnyServerCertificateValidator
+                    };
+
+                    channelOptions.HttpClient = new HttpClient(httpClientHandler);
+                }
+
+                var channel = GrpcChannel.ForAddress(configuration.Services.Scraper.BaseUrl, channelOptions);
+                var client = new Scraper.ScraperService.ScraperServiceClient(channel);
+                
+                return new Services.ScraperService(client);
+            });
 
             services
                 .AddSingleton(SchemaBuilder.Create)

@@ -22,6 +22,23 @@
             }
         },
         {
+            "name": ".NET Core Launch (service)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/services/Scraper.Service/bin/Debug/netcoreapp3.1/Scraper.Service.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}/services/Scraper.Service",
+            "stopAtEntry": false,
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "^\\s*Now listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            }
+        },
+        {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",

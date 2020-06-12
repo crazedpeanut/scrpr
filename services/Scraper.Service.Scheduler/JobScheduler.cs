@@ -28,17 +28,18 @@ namespace Scraper.Service.Scheduler
         {
             var sources = await sourceRepository.Query(_ => true);
 
-            logger.LogInformation($"Checking {sources.Count()} sources for scheduling");
+            logger.LogInformation($"Checking {sources.Count} sources for scheduling");
 
             foreach (var source in sources)
             {
                 var inProgressJobs = await jobRepository.Query(_ => source.Id == _.SourceId && (_.Status == ScraperJobStatus.InProgress || _.Status == ScraperJobStatus.Pending));
-                if (!inProgressJobs.Any())
+                if (inProgressJobs.Count == 0)
                 {
                     await jobPublisher.Publish(new ScraperJob
                     {
                         SourceId = source.Id,
-                        Collector = source.Collector
+                        Collector = source.Collector,
+                        OwnerServiceId = source.OwnerServiceId
                     });
                 }
             }

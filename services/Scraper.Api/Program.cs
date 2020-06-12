@@ -23,8 +23,12 @@ namespace Scraper.Api
             {
                 _
                     .AddJsonFile("appsettings.json", true)
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower()}.json")
+                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower()}.json", true)
                     .AddEnvironmentVariables();
-            }).ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>());
+            })
+            .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>().UseUrls("http://*:5080"));
     }
 }
+
+
+       

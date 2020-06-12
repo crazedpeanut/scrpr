@@ -8,7 +8,7 @@ services:
       context: ./services
     env_file: local.env
     ports: 
-      - 8080:80
+      - 8080:5080
   scraper-service:
     restart: always
     build: 
@@ -16,7 +16,7 @@ services:
       context: ./services
     env_file: local.env
     ports: 
-      - 8081:80
+      - 8081:5443
   scraper-scheduler:
     restart: always
     build: 

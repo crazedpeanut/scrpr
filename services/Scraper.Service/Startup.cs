@@ -10,6 +10,7 @@ using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 using Scraper.Service.Core;
 using Scraper.Configuration;
+using Scraper.Service.Core.Services;
 
 namespace Scraper.Service
 {
@@ -26,6 +27,8 @@ namespace Scraper.Service
         {
             services
                 .AddSingleton(new ConnectionFactory() { HostName = configuration.Queue.Host })
+                .AddSingleton<ScraperJobPublisher>()
+                .AddSingleton(configuration)
                 .AddDataServices(configuration);
 
             services
@@ -41,10 +44,11 @@ namespace Scraper.Service
             {
                 app.UseDeveloperExceptionPage();
             }
+        
 
-            app.UseRouting();
-
-            app.UseEndpoints(endpoints => endpoints.MapGrpcService<Services.ScraperService>());
+            app
+                .UseRouting()
+                .UseEndpoints(endpoints => endpoints.MapGrpcService<Services.ScraperService>());
         }
     }
 }

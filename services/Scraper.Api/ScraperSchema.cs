@@ -21,6 +21,7 @@ namespace Scraper.Api
                     _.Types.Include<Query>();
                     _.Types.Include<WebCollectorType>();
                     _.Types.Include<CollectorType>();
+                    _.Types.Include<Mutation>();
                 });
         }
     }
@@ -44,6 +45,30 @@ namespace Scraper.Api
         public Task<Models.ScraperSource> GetSource(string id)
         {
             return scraperService.GetSource(id);
+        }
+    }
+
+    public class Mutation : ObjectGraphType
+    {
+        private readonly Services.ScraperService scraperService;
+
+        public Mutation(Services.ScraperService scraperService)
+        {
+            this.scraperService = scraperService;
+        }
+
+        [GraphQLMetadata("createWebSource")]
+        public async Task<string> CreateSource(Models.WebSourceInput webSource)
+        {
+            var entity = new Models.ScraperSource
+            {
+                Collector = new Models.WebCollector
+                {
+                    Target = webSource.Target
+                }
+            };
+
+            return await scraperService.CreateSource(entity);
         }
     }
 }

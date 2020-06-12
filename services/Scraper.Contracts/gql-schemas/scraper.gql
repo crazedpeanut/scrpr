@@ -20,13 +20,10 @@ input WebCollectorInput{
 	target: String!
 }
 
-input WebSourceInput{
-	url: String!
-}
 
 type Mutation{
 	createWebSource(
-		source: WebSourceInput!
+		source: WebCollectorInput!
 	): String!
 }
 schema{

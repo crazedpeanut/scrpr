@@ -16,6 +16,6 @@ namespace Scraper.Mongo
         public static IServiceCollection AddRepository<T>(this IServiceCollection services, string name) where T : MongoEntity =>
             services
                 .AddMongoCollection<T>(name)
-                .AddScoped<IRepository<T>, SimpleRepository<T>>();
+                .AddSingleton<IRepository<T>, SimpleRepository<T>>();
     }
 }

@@ -24,5 +24,6 @@ namespace Scraper.Service.Core.Models
     public class ScraperSource : MongoEntity
     {
         public CollectorProperties Collector { get; set; }
+        public string OwnerServiceId { get; set; }
     }
 }
