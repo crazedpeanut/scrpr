@@ -24,7 +24,7 @@ input WebCollectorInput{
 type Mutation{
 	createWebSource(
 		source: WebCollectorInput!
-	): String!
+	): ID!
 }
 schema{
 	query: Query,
