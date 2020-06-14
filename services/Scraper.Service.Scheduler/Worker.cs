@@ -11,13 +11,11 @@ namespace Scraper.Service.Scheduler
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
         private readonly IServiceProvider serviceProvider;
 
-        public Worker(ILogger<Worker> logger, IServiceProvider serviceProvider)
+        public Worker(IServiceProvider serviceProvider)
         {
             this.serviceProvider = serviceProvider;
-            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

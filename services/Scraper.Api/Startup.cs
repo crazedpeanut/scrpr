@@ -78,7 +78,7 @@ namespace Scraper.Api
 
                 var channel = GrpcChannel.ForAddress(configuration.Services.Scraper.BaseUrl, channelOptions);
                 var client = new Scraper.ScraperService.ScraperServiceClient(channel);
-                
+
                 return new Services.ScraperService(client);
             });
 

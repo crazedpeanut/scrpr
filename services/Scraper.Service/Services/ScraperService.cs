@@ -96,9 +96,23 @@ namespace Scraper.Service.Services
             return response;
         }
 
+        public override async Task<StartResponse> Start(StartRequest request, ServerCallContext context)
+        {
+            var job = new Core.Models.ScraperJob()
+            {
+                Collector = MapCollectorProperties(request.Collector),
+                OwnerServiceId = context.AuthContext.FindPropertiesByName("clientId").SingleOrDefault()?.Value
+            };
+
+            return new StartResponse
+            {
+                Id = await jobPublisher.Publish(job)
+            };
+        }
+
         private static CollectorProperties MapCollectorProperties(Any properties)
         {
-            if (properties.Is(WebCollector.Descriptor) && properties.TryUnpack<WebCollector>(out var collector))
+            if (properties.TryUnpack<WebCollector>(out var collector))
             {
                 return new WebCollectorProperties
                 {
@@ -107,7 +121,7 @@ namespace Scraper.Service.Services
             }
             else
             {
-                throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown collector"));
+                throw new RpcException(new Status(StatusCode.InvalidArgument, $"Unknown collector {properties.TypeUrl}"));
             }
         }
 
@@ -121,21 +135,7 @@ namespace Scraper.Service.Services
                 });
             }
 
-            throw new RpcException(new Status(StatusCode.InvalidArgument, "Unknown collector"));
-        }
-
-        public override async Task<StartResponse> Start(StartRequest request, ServerCallContext context)
-        {
-            var job = new Core.Models.ScraperJob()
-            {
-                Collector = MapCollectorProperties(request.Collector),
-                OwnerServiceId = context.AuthContext.FindPropertiesByName("clientId").SingleOrDefault()?.Value
-            };
-
-            return new StartResponse
-            {
-                Id = await jobPublisher.Publish(job)
-            };
+            throw new RpcException(new Status(StatusCode.InvalidArgument, $"Unknown collector {properties.GetType().Name}"));
         }
     }
 }

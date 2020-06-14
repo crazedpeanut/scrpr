@@ -11,6 +11,7 @@ namespace Scraper.Service.Core.Models
     {
         public const string Kind = "web";
         public Uri Target { get; set; }
+        public override string CollectorKind => Kind;
     }
 
     [BsonKnownTypes(typeof(WebCollectorProperties))]
@@ -18,7 +19,7 @@ namespace Scraper.Service.Core.Models
     public abstract class CollectorProperties
     {
         [BsonElement("_t")]
-        public string CollectorKind { get; }
+        public abstract string CollectorKind { get; }
     }
 
     public class ScraperSource : MongoEntity

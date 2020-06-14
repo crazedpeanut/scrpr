@@ -6,6 +6,7 @@ using GraphQL;
 using GraphQL.Types;
 using static Scraper.Contracts.Contracts;
 using Scraper.Api.Models.GraphQL;
+using Scraper.Api.Models;
 
 namespace Scraper.Api
 {
@@ -58,13 +59,13 @@ namespace Scraper.Api
         }
 
         [GraphQLMetadata("createWebSource")]
-        public async Task<string> CreateSource(Models.WebSourceInput webSource)
+        public async Task<string> CreateSource(Models.WebSourceInput source)
         {
             var entity = new Models.ScraperSource
             {
                 Collector = new Models.WebCollector
                 {
-                    Target = webSource.Target
+                    Target = source.Target
                 }
             };
 

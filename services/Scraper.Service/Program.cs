@@ -1,11 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Scraper.Configuration;
@@ -25,9 +20,7 @@ namespace Scraper.Service
         {
             var configuration = new ScraperConfiguration();
             new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", true)
-                .AddJsonFile($"appsettings.${Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", true)
-                .AddEnvironmentVariables()
+                .AddScrpr()
                 .Build()
                 .Bind(configuration);
 
@@ -36,9 +29,7 @@ namespace Scraper.Service
                .ConfigureAppConfiguration((env, builder) =>
                {
                    builder
-                       .AddJsonFile("appsettings.json", true)
-                       .AddJsonFile($"appsettings.${env.HostingEnvironment.EnvironmentName}.json", true)
-                       .AddEnvironmentVariables();
+                    .AddScrpr();
                })
                .ConfigureWebHostDefaults(webBuilder =>
                    webBuilder
@@ -50,11 +41,10 @@ namespace Scraper.Service
                                listen.UseHttps(https =>
                                {
                                    var certData = Convert.FromBase64String(configuration.Services.Scraper.Certificate);
-                                   https.ServerCertificate =  new X509Certificate2(certData);
+                                   https.ServerCertificate = new X509Certificate2(certData);
                                });
                            });
                        }));
         }
-
     }
 }

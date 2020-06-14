@@ -1,12 +1,6 @@
-using System.Runtime.InteropServices.ComTypes;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Scraper.Configuration;
 
 namespace Scraper.Api
 {
@@ -22,13 +16,8 @@ namespace Scraper.Api
             .ConfigureAppConfiguration(_ =>
             {
                 _
-                    .AddJsonFile("appsettings.json", true)
-                    .AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?.ToLower()}.json", true)
-                    .AddEnvironmentVariables();
+                    .AddScrpr();
             })
             .ConfigureWebHostDefaults(webBuilder => webBuilder.UseStartup<Startup>().UseUrls("http://*:5080"));
     }
 }
-
-
-       

@@ -10,7 +10,6 @@ namespace Scraper.Api.Models
 
     public abstract class Collector
     {
-
     }
 
     public class WebCollector : Collector

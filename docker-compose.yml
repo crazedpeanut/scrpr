@@ -23,6 +23,12 @@ services:
       dockerfile: ./Scraper.Service.Scheduler/Dockerfile
       context: ./services
     env_file: local.env
+  storm-scraper-topology:
+    restart: always
+    build: ./storm
+    env_file: local.env
+    depends_on:
+      - supervisor
   web:
     build: ./web
   rabbit:

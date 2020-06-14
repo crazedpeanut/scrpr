@@ -64,7 +64,7 @@ namespace Scraper.Api.Services
                 };
             }
 
-            throw new System.Exception("Unknown collector type");
+            throw new System.Exception($"Unknown collector type {value.TypeUrl}");
         }
 
         private Any MapCollector(Models.Collector collector)
@@ -77,7 +77,7 @@ namespace Scraper.Api.Services
                 });
             }
 
-            throw new System.Exception("Unknown collector type");
+            throw new System.Exception($"Unknown collector type {collector.GetType().Name}");
         }
     }
 }

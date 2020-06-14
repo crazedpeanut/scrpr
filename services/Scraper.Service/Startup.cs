@@ -32,10 +32,7 @@ namespace Scraper.Service
                 .AddDataServices(configuration);
 
             services
-                .AddGrpc(options =>
-                {
-                    options.EnableDetailedErrors = true;
-                });
+                .AddGrpc(options => options.EnableDetailedErrors = true);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -44,7 +41,6 @@ namespace Scraper.Service
             {
                 app.UseDeveloperExceptionPage();
             }
-        
 
             app
                 .UseRouting()
